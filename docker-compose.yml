@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+  elastic:
+    image: elasticsearch:7.5.1
+    privileged: true
+    container_name: elastic-test
+    ports:
+      - 19200:9200
+      - 19300:9300
+    volumes: # 挂载数据
+      - ./config/elastic/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./data/es-data-test:/usr/share/elasticsearch/data
+    environment:
+      discovery.type: single-node
+    networks:
+      dev:
+        ipv4_address: 172.18.0.20
+
+  mysql:
+    image: mysql:5.7
+    privileged: true
+    container_name: mysql-test
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+    networks:
+      dev:
+        ipv4_address: 172.18.0.21
+
+  rabbitMq:
+    image: rabbitmq:3.7-management
+    privileged: true
+    container_name: rabbitmq-test
+    ports:
+      - 5673:5672
+      - 15673:15672
+    networks:
+      dev:
+        ipv4_address: 172.18.0.22
+
+  canal:
+    image: canal/canal-server
+    privileged: true
+    container_name: canal-test
+    volumes:
+      - .config/canal/example/:/home/admin/canal-server/conf/example/   # 本地挂载实例配置
+      - ./canal-server-logs/:/home/admin/canal-server/logs/  # 同步日志(可能需要定时清理)
+    networks:
+      dev:
+        ipv4_address: 172.18.0.23
+    depends_on:
+      - mysql
+
+  syncDb:
+    image: sync-search
+    privileged: true
+    container_name: syncDb-test
+    volumes:
+      - ./:/search
+    networks:
+      dev:
+        ipv4_address: 172.18.0.24
+    depends_on:
+      - canal
+      - rabbitMq
+      - elastic
+
+networks: # 自定义网络
+  dev:
+    external: true

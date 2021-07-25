@@ -1,0 +1,52 @@
+{
+  "dataSource": [
+    {
+      "drive": "mysql",
+      "name": "default",
+      "url": "192.168.7.130:3306",
+      "user": "root",
+      "password": "dys123",
+      "db": "statement"
+    },
+    {
+      "drive": "mysql",
+      "name": "statement",
+      "url": "192.168.7.130:3306",
+      "user": "root",
+      "password": "dys123",
+      "db": "statement"
+    },
+    {
+      "drive": "mysql",
+      "name": "coolvox_dev",
+      "url": "192.168.0.11:3306",
+      "user": "root",
+      "password": "root",
+      "db": "coolvox_dev"
+    }
+
+  ],
+
+  "redis": {
+    "uri": "127.0.0.1:6379",
+    "password": "",
+    "db": 0
+  },
+
+  "canal": {
+    "uri": "192.168.7.130",
+    "name": "canal",
+    "password": "canal",
+    "port": 11111,
+    "dest": "example",
+    "so_to": 60000,
+    "idle_to": 3600000
+  },
+
+  "amqp_url": "amqp://admin:admin@192.168.7.130:5672/admin",
+
+  "elasticSearch": {
+    "host": "http://192.168.7.130:9200/",
+    "debug": false
+  }
+}

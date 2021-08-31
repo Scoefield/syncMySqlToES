@@ -250,4 +250,68 @@ func (s *SchemaIndex) GetCount() (int, error){
 }
 
 
+func (s *SchemaIndex) SearchESData() {
+	//ElasticClient.Search("canal_product", "store")
+
+	// search all, 0-20, default 10
+	//res, err := ElasticClient.Search("deal").From(0).Size(20).Do(context.Background())
+	//if err != nil {
+	//	panic(err)
+	//}
+	//hits := res.Hits.Hits
+	//for _, v := range hits {
+	//	data, _ := v.Source.MarshalJSON()
+	//	fmt.Println("************data=", string(data))
+	//	var dealFields DealFieldRet
+	//	_ = json.Unmarshal(data, &dealFields)
+	//	fmt.Printf("*****dealFields=%v\n", dealFields)
+	//}
+
+	// search filter one of string
+	//query := elastic.NewQueryStringQuery("Fitem_class_id:68")
+	//res, err := ElasticClient.Search("deal").Query(query).Do(context.Background())
+	//errorlog.CheckErr(err)
+	//hits := res.Hits.Hits
+	//for _, v := range hits {
+	//	data, _ := v.Source.MarshalJSON()
+	//	fmt.Println("+++++++++++++data=", string(data))
+	//	var dealFields DealFieldRet
+	//	_ = json.Unmarshal(data, &dealFields)
+	//	fmt.Printf("+++++dealFields=%v\n", dealFields)
+	//}
+
+
+	//q := elastic.NewMatchPhraseQuery("Fitem_title", "光源 BPZ520 857.E27")
+	// 短语搜索 包含
+	//q := elastic.NewMatchPhraseQuery("Fitem_title", "冰箱")
+	//q := elastic.NewTermQuery("Fdeal_id", 11104406144)
+
+	//q := elastic.NewMoreLikeThisQuery()
+	//q.Field("Fitem_title")
+	//q.LikeText("BPZ520")
+	//q.MinTermFreq(1)
+
+	title := make([]interface{}, 0)
+	title = append(title, "iPhone4s", "iPhone6s")
+	q := elastic.NewBoolQuery()
+	q.Must(elastic.NewTermsQuery("title", title))
+	//q.Filter(elastic.NewRangeQuery("Fdeal_gen_time").Gte("2020-11-01 20:11:15").Lte("2020-11-03 20:11:20"))
+	// 精确匹配
+	//q.Filter(elastic.NewTermQuery("Fitem_pic", "9094597dd"), elastic.NewRangeQuery("Ftrade_buy_num").Gte("1").Lte("5"))
+	// 模糊匹配，和范围搜索
+	//q.Filter(elastic.NewMatchQuery("Fitem_title", "248WTZM"), elastic.NewRangeQuery("Ftrade_buy_num").Gte("1").Lte("5"))
+
+
+	res, err := ElasticClient.Search("track").Query(q).Do(context.Background())
+	errorlog.CheckErr(err)
+	hits := res.Hits.Hits
+	for _, v := range hits {
+		data, _ := v.Source.MarshalJSON()
+		fmt.Println("+++++++++++++data=", string(data))
+		// var dealRet DealFieldRet
+		// _ = json.Unmarshal(data, &dealRet)
+		// fmt.Printf("+++++dealFields=%v\n", dealRet)
+	}
+
+}
 

@@ -31,6 +31,8 @@ func main() {
 			module.SyncElastic4Mq(*n)
 		case "web":
 			module.Application(*port)
+		case "searches":
+			module.TestSearch()
 		default:
 			fmt.Printf("Module '%s' 不存在，可选 'init/delete/rebuild/mapping/db2mq/es4mq/web'\n", *mod)
 	}

@@ -7,6 +7,8 @@ import (
 	"github/guanhg/syncDB-search/cache"
 	"github/guanhg/syncDB-search/errorlog"
 	"github/guanhg/syncDB-search/schema"
+	"log"
+	"runtime"
 )
 
 // 初始化索引
@@ -62,4 +64,17 @@ func checkParam(tableName, dbName string)  {
 	if dbName == ""{
 		errorlog.CheckErr(errorlog.ParameterError, "dbName")
 	}
+}
+
+func TestSearch()  {
+	defer func() {
+		if e:=recover(); e!=nil{
+			buf := make([]byte, 1<<16)
+			runtime.Stack(buf, true)
+			log.Printf("TestSearchOne panic, errMsg: %v, stackBuf: %v\n", e, string(buf))
+		}
+	}()
+	table := schema.SchemaIndex{Name: "", Context: cache.GetContext("default")}
+	//table.GetOneById()
+	table.SearchESData()
 }

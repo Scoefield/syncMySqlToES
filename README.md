@@ -59,6 +59,7 @@ Mysql --> Canal --> MQ（RabbitMq/Kafka） --> ElasticSearch
 go run search.go -m init|delete|rebuild|mapping -t track -d statement
 如 同步数据statement中所有表更新数据到mq
 go run search.go -m db2mq -r "statement\\..*"
+go run search.go -m db2mq -r "statement\\.track.*"
 如 10个协程同步mq数据到es
 go run search.go -m es4mq -n 10
 如 启动search web应用,端口8080
